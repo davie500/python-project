@@ -46,4 +46,3 @@ class Message(models.Model):
         if len(preview) > 60:
             preview = preview[:57] + "..."
         return f"{self.role}: {preview}"
-

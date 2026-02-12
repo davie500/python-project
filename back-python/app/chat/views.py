@@ -75,4 +75,3 @@ def message_create(request: HttpRequest, conversation_id: int) -> HttpResponse:
         {"conversation": conversation, "messages": messages, "message_form": form},
         status=400,
     )
-

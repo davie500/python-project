@@ -17,4 +17,3 @@ class MessageAdmin(admin.ModelAdmin):
     list_filter = ("role", "created_at")
     search_fields = ("content", "conversation__title", "conversation__user__username")
     ordering = ("-created_at",)
-
