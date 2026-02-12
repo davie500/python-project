@@ -1,0 +1,61 @@
+EXERCÍCIOS - Aplicação Django com chat de conversas, MySQL e Docker.
+
+1. ESTRUTURA DO PROJETO
+   Liste os 3 principais diretórios dentro da pasta "app" e explique em uma
+   frase o que cada um contém.
+
+2. MODELO CONVERSATION
+   Quantos campos tem o modelo Conversation? Escreva o nome de cada um e seu
+   tipo (CharField, DateTimeField, etc.).
+
+3. MODELO MESSAGE
+   Quais são as 3 opções possíveis para o campo "role" do modelo Message?
+   Explique o que cada uma representa.
+
+4. RELACIONAMENTO ENTRE MODELOS
+   Qual é o relacionamento entre Conversation e Message? (Um para um, muitos
+   para um, etc.) Justifique com base nos campos dos modelos.
+
+5. FORMULÁRIO ConversationCreateForm
+   Quantos campos o usuário precisa preencher para criar uma nova conversa?
+   O campo "title" é obrigatório? Por quê?
+
+6. FORMULÁRIO MessageCreateForm
+   O formulário MessageCreateForm expõe o campo "role" para o usuário?
+   Se não, onde o valor de "role" é definido na criação da mensagem?
+
+7. ROTAS DA APLICAÇÃO
+   Quais são as 4 rotas definidas no app "chat"? Para cada uma, indique a
+   URL e o nome (name) da rota.
+
+8. VIEW conversation_list
+   A view conversation_list retorna conversas de todos os usuários ou apenas
+   do usuário logado? Em qual arquivo e linha isso é garantido?
+
+9. DECORADORES @login_required e @require_POST
+   Por que a view message_create usa o decorador @require_POST? O que
+   aconteceria se alguém tentasse acessar essa URL via GET?
+
+10. DOCKER COMPOSE
+    Quais são os dois serviços principais definidos no docker-compose.yml?
+    (Dica: "web" e outro serviço de banco de dados.)
+
+11. HEALTH CHECK
+    Qual é a URL do endpoint de health check? O que ele retorna quando
+    acessado com sucesso?
+
+12. VARIÁVEIS DE AMBIENTE
+    Cite 3 variáveis de ambiente necessárias para o MySQL funcionar.
+    (Consulte o README ou .env.example.)
+
+13. COMANDO DE MIGRATION
+    Qual comando você usaria, dentro do container "web", para criar as
+    migrations do app "chat"? (Use o padrão: docker compose exec web ...)
+
+14. DJANGO ADMIN
+    Qual é a URL para acessar o painel administrativo do Django quando a
+    aplicação está rodando localmente?
+
+15. CAMPOS auto_now_add e auto_now
+    No modelo Conversation, qual a diferença entre os campos created_at e
+    updated_at em relação a quando seus valores são atualizados?
