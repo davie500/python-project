@@ -2,8 +2,8 @@
 # KAUÃ - INFRAESTRUTURA & DEVOPS
 # Responsável por Docker, PostgreSQL e variáveis de ambiente. Configura containers, healthchecks e scripts de inicialização. Garante que a aplicação possa ser construída e iniciada facilmente.
 
-# VITOR, Hariel - BACKEND & BANCO DE DADOS
+# VITOR, Hariel e DAVI- BACKEND & BANCO DE DADOS
 # Responsável por configurar Django para PostgreSQL, executar migrations e validar a estrutura de dados. Mantém a integridade do banco de dados e testa todas as operações CRUD.
 
-# HARIEL - MONITORAMENTO & PUBLICAÇÃO
+# DAVI - MONITORAMENTO & PUBLICAÇÃO
 # Responsável por integrar Sentry para monitoramento de erros, publicar o código no GitHub e documentar o projeto. Gerencia credenciais de forma segura.
