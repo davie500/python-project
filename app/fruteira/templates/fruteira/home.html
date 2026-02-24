@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fruteira</title>
+    <style>
+        :root {
+            --bg: #fffaf2;
+            --card: #ffffff;
+            --ink: #272117;
+            --accent: #d96f32;
+            --accent-dark: #b5531b;
+            --muted: #7f705a;
+            --ok: #2f7d4c;
+            --border: #ecdcc4;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+            background: radial-gradient(circle at top left, #ffe9cb 0%, var(--bg) 55%);
+            color: var(--ink);
+            min-height: 100vh;
+            padding: 24px;
+        }
+
+        .container {
+            max-width: 980px;
+            margin: 0 auto;
+            display: grid;
+            gap: 16px;
+            grid-template-columns: 1.3fr 1fr;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 18px;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.06);
+        }
+
+        h1 {
+            margin-bottom: 12px;
+        }
+
+        .fruta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px dashed var(--border);
+            padding: 12px 0;
+        }
+
+        .fruta:last-child {
+            border-bottom: none;
+        }
+
+        .nome {
+            font-weight: 700;
+        }
+
+        .preco {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        button {
+            border: none;
+            border-radius: 8px;
+            padding: 8px 12px;
+            cursor: pointer;
+            color: #fff;
+            font-weight: 700;
+            transition: 0.2s;
+        }
+
+        .add {
+            background: var(--accent);
+        }
+
+        .add:hover {
+            background: var(--accent-dark);
+        }
+
+        .remove {
+            background: #8b8b8b;
+        }
+
+        .remove:hover {
+            background: #6f6f6f;
+        }
+
+        .badge {
+            background: #eef8f1;
+            color: var(--ok);
+            border: 1px solid #cde8d6;
+            border-radius: 999px;
+            padding: 4px 10px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .carrinho-linha {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #f3ecde;
+        }
+
+        .carrinho-linha:last-child {
+            border-bottom: none;
+        }
+
+        .total {
+            margin-top: 14px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        @media (max-width: 760px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <section class="card">
+            <h1>Fruteira da Esquina</h1>
+            {% for fruta in frutas %}
+                <div class="fruta">
+                    <div>
+                        <p class="nome">{{ fruta.nome }}</p>
+                        <p class="preco">R$ {{ fruta.preco|floatformat:2 }} / kg</p>
+                    </div>
+                    <div class="actions">
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="fruta_id" value="{{ fruta.id }}">
+                            <input type="hidden" name="acao" value="remover">
+                            <button class="remove" type="submit">-</button>
+                        </form>
+
+                        {% for item in itens_carrinho %}
+                            {% if item.id == fruta.id %}
+                                <span class="badge">{{ item.quantidade }} no carrinho</span>
+                            {% endif %}
+                        {% endfor %}
+
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="fruta_id" value="{{ fruta.id }}">
+                            <input type="hidden" name="acao" value="adicionar">
+                            <button class="add" type="submit">+</button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        </section>
+
+        <aside class="card">
+            <h2>Carrinho</h2>
+            {% if carrinho_vazio %}
+                <p>Nenhum item no carrinho.</p>
+            {% else %}
+                {% for item in itens_carrinho %}
+                    {% if item.quantidade > 0 %}
+                        <div class="carrinho-linha">
+                            <span>{{ item.nome }} (x{{ item.quantidade }})</span>
+                            <span>R$ {{ item.subtotal|floatformat:2 }}</span>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+            <div class="total">
+                <span>Total:</span>
+                <span>R$ {{ total|floatformat:2 }}</span>
+            </div>
+        </aside>
+    </div>
+</body>
+</html>

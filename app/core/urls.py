@@ -19,6 +19,8 @@ from django.contrib import admin
 from django.urls import include, path
 from django.http import JsonResponse
 
+admin.site.site_url = "/fruteira/"
+
 
 def health_check(request):
     """
@@ -32,5 +34,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),  # Painel administrativo do Django
     path("accounts/", include("django.contrib.auth.urls")),
     path("", include("chat.urls")),
+    path("fruteira/", include("fruteira.urls")),
     path('health/', health_check, name='health_check'),  # Endpoint para health check
 ]
