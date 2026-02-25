@@ -1,5 +1,9 @@
 from django.urls import path
 
+from . import views
+
+app_name = "inventory"
+
 urlpatterns = [
-    # URLs do app inventory (a serem desenvolvidas)
+    path("", views.inventory_home, name="home"),
 ]
