@@ -35,7 +35,7 @@
         }
 
         .container {
-            max-width: 1080px;
+            max-width: 1180px;
             margin: 0 auto;
             display: grid;
             grid-template-columns: 360px 1fr;
@@ -90,6 +90,10 @@
             resize: vertical;
         }
 
+        input[type="checkbox"] {
+            width: auto;
+        }
+
         .button {
             border: none;
             border-radius: 10px;
@@ -99,10 +103,21 @@
             width: 100%;
             padding: 12px;
             cursor: pointer;
+            margin-bottom: 10px;
         }
 
         .button:hover {
             background: var(--brand-2);
+        }
+
+        .button-muted {
+            background: #7f7c70;
+        }
+
+        .button-link {
+            display: block;
+            text-align: center;
+            text-decoration: none;
         }
 
         .list-card {
@@ -113,6 +128,7 @@
             width: 100%;
             border-collapse: collapse;
             font-size: 14px;
+            margin-bottom: 16px;
         }
 
         th, td {
@@ -164,6 +180,7 @@
             border-radius: 10px;
             padding: 16px;
             background: #fffdf8;
+            margin-bottom: 16px;
         }
 
         .admin-links a {
@@ -172,6 +189,40 @@
             margin-right: 10px;
             font-weight: 700;
             font-size: 14px;
+        }
+
+        .block-title {
+            margin-top: 14px;
+        }
+
+        .inline-check {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .link-btn {
+            border: none;
+            background: transparent;
+            color: #2f5ea6;
+            font-weight: 700;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .link-btn-danger {
+            color: #a51d2d;
+        }
+
+        .inline-form {
+            display: inline;
         }
 
         @media (max-width: 900px) {
@@ -188,8 +239,9 @@
 <body>
     <main class="container">
         <section class="card form-card">
-            <h1>Estoque de Frutas</h1>
-            <p>Cadastre entradas de estoque para fruteiras e controle vencimentos.</p>
+            <a style="font-size: 6px;" href="/admin">Admin</a>
+            <h1>Cadastro da Fruteira</h1>
+            <p>Cadastre, edite e retire frutas. Depois, coloque os itens no estoque.</p>
 
             {% if messages %}
                 {% for message in messages %}
@@ -197,51 +249,98 @@
                 {% endfor %}
             {% endif %}
 
-            {% if sem_cadastros_base %}
+            <h2 class="block-title">{% if fruta_em_edicao %}Editar fruta{% else %}Nova fruta{% endif %}</h2>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="form_tipo" value="fruta_salvar">
+                {% if fruta_em_edicao %}
+                    <input type="hidden" name="fruta_id" value="{{ fruta_em_edicao.id }}">
+                {% endif %}
+                <div class="field">
+                    <label for="{{ fruta_form.nome.id_for_label }}">Nome</label>
+                    {{ fruta_form.nome }}
+                    {{ fruta_form.nome.errors }}
+                </div>
+                <div class="field">
+                    <label for="{{ fruta_form.descricao.id_for_label }}">Descricao</label>
+                    {{ fruta_form.descricao }}
+                    {{ fruta_form.descricao.errors }}
+                </div>
+                <div class="field">
+                    <label for="{{ fruta_form.preco_unitario.id_for_label }}">Preco unitario</label>
+                    {{ fruta_form.preco_unitario }}
+                    {{ fruta_form.preco_unitario.errors }}
+                </div>
+                <div class="field">
+                    <label for="{{ fruta_form.unidade.id_for_label }}">Unidade</label>
+                    {{ fruta_form.unidade }}
+                    {{ fruta_form.unidade.errors }}
+                </div>
+                <div class="field inline-check">
+                    {{ fruta_form.ativa }}
+                    <label for="{{ fruta_form.ativa.id_for_label }}">Ativa</label>
+                    {{ fruta_form.ativa.errors }}
+                </div>
+
+                {% if fruta_form.non_field_errors %}
+                    <ul class="errors">
+                        {% for error in fruta_form.non_field_errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+
+                <button class="button" type="submit">{% if fruta_em_edicao %}Salvar fruta{% else %}Adicionar fruta{% endif %}</button>
+                {% if fruta_em_edicao %}
+                    <a href="{% url 'inventory:home' %}" class="button button-muted button-link">Cancelar edicao</a>
+                {% endif %}
+            </form>
+
+            <h2 class="block-title">Adicionar item em estoque</h2>
+            {% if sem_fruteiras %}
                 <div class="alert">
-                    Antes de cadastrar estoque, crie ao menos uma fruteira e uma fruta no admin.
+                    Antes de cadastrar estoque, crie ao menos uma fruteira no admin.
                 </div>
                 <div class="admin-links">
                     <a href="{% url 'admin:inventory_fruteira_add' %}">Nova Fruteira</a>
-                    <a href="{% url 'admin:inventory_fruta_add' %}">Nova Fruta</a>
+                </div>
+            {% elif sem_frutas_ativas %}
+                <div class="alert">
+                    Cadastre e ative ao menos uma fruta para incluir itens em estoque.
                 </div>
             {% else %}
                 <form method="post">
                     {% csrf_token %}
+                    <input type="hidden" name="form_tipo" value="estoque_salvar">
                     <div class="field">
-                        <label for="{{ form.fruteira.id_for_label }}">Fruteira</label>
-                        {{ form.fruteira }}
-                        {{ form.fruteira.errors }}
+                        <label for="{{ estoque_form.fruteira.id_for_label }}">Fruteira</label>
+                        {{ estoque_form.fruteira }}
+                        {{ estoque_form.fruteira.errors }}
                     </div>
                     <div class="field">
-                        <label for="{{ form.fruta.id_for_label }}">Fruta</label>
-                        {{ form.fruta }}
-                        {{ form.fruta.errors }}
+                        <label for="{{ estoque_form.fruta.id_for_label }}">Fruta</label>
+                        {{ estoque_form.fruta }}
+                        {{ estoque_form.fruta.errors }}
                     </div>
                     <div class="field">
-                        <label for="{{ form.quantidade.id_for_label }}">Quantidade</label>
-                        {{ form.quantidade }}
-                        {{ form.quantidade.errors }}
+                        <label for="{{ estoque_form.quantidade.id_for_label }}">Quantidade</label>
+                        {{ estoque_form.quantidade }}
+                        {{ estoque_form.quantidade.errors }}
                     </div>
                     <div class="field">
-                        <label for="{{ form.data_vencimento.id_for_label }}">Data de vencimento</label>
-                        {{ form.data_vencimento }}
-                        {{ form.data_vencimento.errors }}
+                        <label for="{{ estoque_form.data_vencimento.id_for_label }}">Data de vencimento</label>
+                        {{ estoque_form.data_vencimento }}
+                        {{ estoque_form.data_vencimento.errors }}
                     </div>
                     <div class="field">
-                        <label for="{{ form.lote.id_for_label }}">Lote</label>
-                        {{ form.lote }}
-                        {{ form.lote.errors }}
-                    </div>
-                    <div class="field">
-                        <label for="{{ form.observacoes.id_for_label }}">Observacoes</label>
-                        {{ form.observacoes }}
-                        {{ form.observacoes.errors }}
+                        <label for="{{ estoque_form.observacoes.id_for_label }}">Observacoes</label>
+                        {{ estoque_form.observacoes }}
+                        {{ estoque_form.observacoes.errors }}
                     </div>
 
-                    {% if form.non_field_errors %}
+                    {% if estoque_form.non_field_errors %}
                         <ul class="errors">
-                            {% for error in form.non_field_errors %}
+                            {% for error in estoque_form.non_field_errors %}
                                 <li>{{ error }}</li>
                             {% endfor %}
                         </ul>
@@ -253,6 +352,44 @@
         </section>
 
         <section class="card list-card">
+            <h2>Frutas cadastradas</h2>
+            {% if frutas %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Preco</th>
+                            <th>Unidade</th>
+                            <th>Ativa</th>
+                            <th>Acoes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for fruta in frutas %}
+                            <tr>
+                                <td>{{ fruta.nome }}</td>
+                                <td>R$ {{ fruta.preco_unitario|floatformat:2 }}</td>
+                                <td>{{ fruta.get_unidade_display }}</td>
+                                <td>{% if fruta.ativa %}Sim{% else %}Nao{% endif %}</td>
+                                <td>
+                                    <div class="actions">
+                                        <a href="{% url 'inventory:home' %}?editar_fruta={{ fruta.id }}" class="link-btn">Editar</a>
+                                        <form method="post" class="inline-form" onsubmit="return confirm('Remover a fruta {{ fruta.nome }}?');">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="form_tipo" value="fruta_remover">
+                                            <input type="hidden" name="fruta_id" value="{{ fruta.id }}">
+                                            <button type="submit" class="link-btn link-btn-danger">Retirar</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <div class="empty">Ainda nao ha frutas cadastradas.</div>
+            {% endif %}
+
             <h2>Itens em estoque</h2>
             {% if itens_estoque %}
                 <table>
@@ -263,7 +400,6 @@
                             <th>Quantidade</th>
                             <th>Vencimento</th>
                             <th>Status</th>
-                            <th>Lote</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -282,7 +418,6 @@
                                         <span class="pill ok">OK</span>
                                     {% endif %}
                                 </td>
-                                <td>{{ item.lote|default:"-" }}</td>
                             </tr>
                         {% endfor %}
                     </tbody>
