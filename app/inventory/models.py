@@ -32,7 +32,6 @@ class Fruta(models.Model):
         choices=[
             ("kg", "Quilograma"),
             ("un", "Unidade"),
-            ("dz", "Dúzia"),
             ("cx", "Caixa"),
         ],
         default="kg"

@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fruteira</title>
+    <title>Fruteira Moderna</title>
     <style>
         :root {
-            --bg: #fffaf2;
+            --bg: #fff8ef;
             --card: #ffffff;
-            --ink: #272117;
-            --accent: #d96f32;
-            --accent-dark: #b5531b;
-            --muted: #7f705a;
-            --ok: #2f7d4c;
-            --border: #ecdcc4;
+            --ink: #2f2419;
+            --accent: #df6f17;
+            --accent-dark: #b35711;
+            --mint: #2e8b57;
+            --muted: #7d6a57;
+            --border: #eddcc4;
+            --danger: #9f2a2a;
         }
 
         * {
@@ -23,31 +24,90 @@
         }
 
         body {
-            font-family: "Trebuchet MS", "Segoe UI", sans-serif;
-            background: radial-gradient(circle at top left, #ffe9cb 0%, var(--bg) 55%);
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background:
+                radial-gradient(circle at top left, #ffe5b6 0%, rgba(255, 229, 182, 0) 45%),
+                radial-gradient(circle at bottom right, #ffd8b6 0%, rgba(255, 216, 182, 0) 40%),
+                var(--bg);
             color: var(--ink);
             min-height: 100vh;
-            padding: 24px;
+            padding: 26px;
         }
 
         .container {
-            max-width: 980px;
+            max-width: 1100px;
             margin: 0 auto;
             display: grid;
-            gap: 16px;
-            grid-template-columns: 1.3fr 1fr;
+            gap: 18px;
+            grid-template-columns: 1.45fr 1fr;
+        }
+        .right-column {
+            display: grid;
+            gap: 18px;
+            align-content: start;
         }
 
         .card {
             background: var(--card);
             border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 18px;
-            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.06);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 12px 26px rgba(58, 37, 16, 0.09);
+        }
+
+        .headline {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
         }
 
         h1 {
+            font-size: 1.7rem;
+        }
+
+        .tag {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #fff;
+            background: var(--mint);
+            padding: 6px 10px;
+            border-radius: 999px;
+        }
+
+        .toolbar {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .toolbar input {
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 10px 12px;
+            font-size: 14px;
+        }
+
+        .toolbar button {
+            border: none;
+            border-radius: 10px;
+            padding: 10px 14px;
+            background: #f2e4d2;
+            color: #4b3b2a;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .feedback {
             margin-bottom: 12px;
+            border: 1px solid #c6e8d3;
+            background: #ebf9f0;
+            color: #145636;
+            padding: 9px 11px;
+            border-radius: 10px;
+            font-size: 14px;
         }
 
         .fruta {
@@ -56,6 +116,7 @@
             align-items: center;
             border-bottom: 1px dashed var(--border);
             padding: 12px 0;
+            gap: 10px;
         }
 
         .fruta:last-child {
@@ -70,11 +131,33 @@
             color: var(--muted);
             font-size: 14px;
         }
+        .estoque {
+            color: var(--mint);
+            font-size: 13px;
+            font-weight: 700;
+            margin-top: 4px;
+        }
 
         .actions {
             display: flex;
             gap: 8px;
             align-items: center;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .qty-form {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .qty-form input {
+            width: 58px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 8px;
+            text-align: center;
         }
 
         button {
@@ -103,9 +186,17 @@
             background: #6f6f6f;
         }
 
+        .save {
+            background: #476f95;
+        }
+
+        .save:hover {
+            background: #34587b;
+        }
+
         .badge {
             background: #eef8f1;
-            color: var(--ok);
+            color: var(--mint);
             border: 1px solid #cde8d6;
             border-radius: 999px;
             padding: 4px 10px;
@@ -124,6 +215,38 @@
             border-bottom: none;
         }
 
+        .summary-line {
+            display: flex;
+            justify-content: space-between;
+            padding: 7px 0;
+            color: #4f4030;
+        }
+
+        .coupon-box {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 8px;
+            margin-top: 14px;
+        }
+
+        .coupon-box input {
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            padding: 9px 11px;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+
+        .danger {
+            margin-top: 14px;
+            width: 100%;
+            background: var(--danger);
+        }
+
+        .danger:hover {
+            background: #7e1f1f;
+        }
+
         .total {
             margin-top: 14px;
             display: flex;
@@ -132,8 +255,29 @@
             font-weight: 800;
         }
 
+        .muted {
+            color: var(--muted);
+            font-size: 13px;
+            margin-top: 8px;
+        }
+        .stock-row {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #f3ecde;
+            padding: 8px 0;
+            font-size: 14px;
+        }
+        .stock-row:last-child {
+            border-bottom: none;
+        }
+
         @media (max-width: 760px) {
             .container {
+                grid-template-columns: 1fr;
+            }
+
+            .toolbar,
+            .coupon-box {
                 grid-template-columns: 1fr;
             }
         }
@@ -142,12 +286,27 @@
 <body>
     <div class="container">
         <section class="card">
-            <h1>Fruteira da Esquina</h1>
+            <div class="headline">
+                <a href="/admin">Admin</a>
+                <h1>{% if fruteira_ativa %}{{ fruteira_ativa.nome }}{% else %}Fruteira sem cadastro{% endif %}</h1>
+                <span class="tag">Entrega no mesmo dia</span>
+            </div>
+
+            {% if feedback %}
+                <p class="feedback">{{ feedback }}</p>
+            {% endif %}
+
+            <form method="get" class="toolbar">
+                <input type="text" name="q" placeholder="Buscar fruta..." value="{{ q }}">
+                <button type="submit">Buscar</button>
+            </form>
+
             {% for fruta in frutas %}
                 <div class="fruta">
                     <div>
                         <p class="nome">{{ fruta.nome }}</p>
                         <p class="preco">R$ {{ fruta.preco|floatformat:2 }} / kg</p>
+                        <p class="estoque">Estoque: {{ fruta.estoque }}</p>
                     </div>
                     <div class="actions">
                         <form method="post">
@@ -169,30 +328,94 @@
                             <input type="hidden" name="acao" value="adicionar">
                             <button class="add" type="submit">+</button>
                         </form>
+
+                        {% for item in itens_carrinho %}
+                            {% if item.id == fruta.id %}
+                                <form method="post" class="qty-form">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="fruta_id" value="{{ fruta.id }}">
+                                    <input type="hidden" name="acao" value="atualizar_qtd">
+                                    <!-- <input type="number" name="quantidade" min="0" max="{{ fruta.estoque }}" value="{{ item.quantidade }}"> -->
+                                    <button class="save" type="submit">ok</button>
+                                </form>
+                            {% endif %}
+                        {% endfor %}
                     </div>
                 </div>
+            {% empty %}
+                {% if fruteira_ativa %}
+                    <p>Nenhuma fruta encontrada para a busca.</p>
+                {% else %}
+                    <p>Cadastre uma fruteira e itens de estoque no admin para comecar.</p>
+                {% endif %}
             {% endfor %}
         </section>
 
-        <aside class="card">
-            <h2>Carrinho</h2>
-            {% if carrinho_vazio %}
-                <p>Nenhum item no carrinho.</p>
-            {% else %}
-                {% for item in itens_carrinho %}
-                    {% if item.quantidade > 0 %}
-                        <div class="carrinho-linha">
-                            <span>{{ item.nome }} (x{{ item.quantidade }})</span>
-                            <span>R$ {{ item.subtotal|floatformat:2 }}</span>
-                        </div>
-                    {% endif %}
+        <div class="right-column">
+            <aside class="card">
+                <h2>Carrinho</h2>
+                {% if carrinho_vazio %}
+                    <p>Nenhum item no carrinho.</p>
+                {% else %}
+                    {% for item in itens_carrinho %}
+                        {% if item.quantidade > 0 %}
+                            <div class="carrinho-linha">
+                                <span>{{ item.nome }} (x{{ item.quantidade }})</span>
+                                <span>R$ {{ item.subtotal|floatformat:2 }}</span>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+                <div class="summary-line">
+                    <span>Subtotal</span>
+                    <span>R$ {{ subtotal|floatformat:2 }}</span>
+                </div>
+                <div class="summary-line">
+                    <span>Desconto{% if desconto_percentual %} ({{ desconto_percentual }}%){% endif %}</span>
+                    <span>- R$ {{ desconto|floatformat:2 }}</span>
+                </div>
+                <div class="summary-line">
+                    <span>Entrega</span>
+                    <span>{% if frete == 0 %}Gratis{% else %}R$ {{ frete|floatformat:2 }}{% endif %}</span>
+                </div>
+
+                <div class="total">
+                    <span>Total:</span>
+                    <span>R$ {{ total|floatformat:2 }}</span>
+                </div>
+
+                <form method="post" class="coupon-box">
+                    {% csrf_token %}
+                    <input type="hidden" name="acao" value="aplicar_cupom">
+                    <input type="text" name="cupom_codigo" value="{{ cupom_codigo }}" placeholder="Cupom (FRUTA10 ou FRETEGRATIS)">
+                    <button class="add" type="submit">Aplicar</button>
+                </form>
+
+                <p class="muted">Frete gratis acima de R$ {{ meta_frete_gratis|floatformat:2 }} ou com cupom FRETEGRATIS.</p>
+                {% if frete_gratis_por_cupom %}
+                    <p class="muted">Cupom de frete gratis ativo.</p>
+                {% endif %}
+
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="acao" value="limpar">
+                    <button type="submit" class="danger">Limpar carrinho</button>
+                </form>
+            </aside>
+
+            <aside class="card">
+                <h2>Estoque Atual</h2>
+                {% for fruta in estoque_por_fruta %}
+                    <div class="stock-row">
+                        <span>{{ fruta.nome }}</span>
+                        <strong>{{ fruta.estoque }} un.</strong>
+                    </div>
+                {% empty %}
+                    <p>Nenhum item em estoque.</p>
                 {% endfor %}
-            {% endif %}
-            <div class="total">
-                <span>Total:</span>
-                <span>R$ {{ total|floatformat:2 }}</span>
-            </div>
-        </aside>
+            </aside>
+        </div>
     </div>
 </body>
 </html>

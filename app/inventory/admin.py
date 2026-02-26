@@ -65,11 +65,8 @@ class EstoqueItemAdmin(admin.ModelAdmin):
     readonly_fields = ("criado_em", "atualizado_em", "data_entrada")
 
     def dias_para_vencer_display(self, obj):
-        dias = obj.dias_para_vencer()
-        color = "red" if dias <= 0 else "orange" if dias <= 7 else "green"
-        return f'<span style="color: {color}; font-weight: bold;">{dias} dias</span>'
+        return obj.data_vencimento.strftime("%d/%m/%y")
     dias_para_vencer_display.short_description = "Dias para Vencer"
-    dias_para_vencer_display.allow_tags = True
 
     def status_vencimento(self, obj):
         if obj.esta_vencido():
