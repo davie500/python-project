@@ -8,5 +8,5 @@ django.setup()
 
 import sentry_sdk
 
-sentry_sdk.capture_exception(Exception("hariel gay"))
-print("✅ Erro 'hariel gay' enviado para Sentry!")
+sentry_sdk.capture_exception(Exception("Projeto compilando"))
+print("✅ Erro 'Projeto compilando' enviado para Sentry!")
