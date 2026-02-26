@@ -20,6 +20,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "chat",
     "fruteira",
+    "inventory",
 ]
 
 MIDDLEWARE = [

@@ -41,6 +41,11 @@
             gap: 18px;
             grid-template-columns: 1.45fr 1fr;
         }
+        .right-column {
+            display: grid;
+            gap: 18px;
+            align-content: start;
+        }
 
         .card {
             background: var(--card);
@@ -125,6 +130,12 @@
         .preco {
             color: var(--muted);
             font-size: 14px;
+        }
+        .estoque {
+            color: var(--mint);
+            font-size: 13px;
+            font-weight: 700;
+            margin-top: 4px;
         }
 
         .actions {
@@ -249,6 +260,16 @@
             font-size: 13px;
             margin-top: 8px;
         }
+        .stock-row {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #f3ecde;
+            padding: 8px 0;
+            font-size: 14px;
+        }
+        .stock-row:last-child {
+            border-bottom: none;
+        }
 
         @media (max-width: 760px) {
             .container {
@@ -266,7 +287,8 @@
     <div class="container">
         <section class="card">
             <div class="headline">
-                <h1>Fruteira da Esquina</h1>
+                <a href="/admin">Admin</a>
+                <h1>{% if fruteira_ativa %}{{ fruteira_ativa.nome }}{% else %}Fruteira sem cadastro{% endif %}</h1>
                 <span class="tag">Entrega no mesmo dia</span>
             </div>
 
@@ -284,6 +306,7 @@
                     <div>
                         <p class="nome">{{ fruta.nome }}</p>
                         <p class="preco">R$ {{ fruta.preco|floatformat:2 }} / kg</p>
+                        <p class="estoque">Estoque: {{ fruta.estoque }}</p>
                     </div>
                     <div class="actions">
                         <form method="post">
@@ -312,7 +335,7 @@
                                     {% csrf_token %}
                                     <input type="hidden" name="fruta_id" value="{{ fruta.id }}">
                                     <input type="hidden" name="acao" value="atualizar_qtd">
-                                    <input type="number" name="quantidade" min="0" max="99" value="{{ item.quantidade }}">
+                                    <!-- <input type="number" name="quantidade" min="0" max="{{ fruta.estoque }}" value="{{ item.quantidade }}"> -->
                                     <button class="save" type="submit">ok</button>
                                 </form>
                             {% endif %}
@@ -320,58 +343,79 @@
                     </div>
                 </div>
             {% empty %}
-                <p>Nenhuma fruta encontrada para a busca.</p>
+                {% if fruteira_ativa %}
+                    <p>Nenhuma fruta encontrada para a busca.</p>
+                {% else %}
+                    <p>Cadastre uma fruteira e itens de estoque no admin para comecar.</p>
+                {% endif %}
             {% endfor %}
         </section>
 
-        <aside class="card">
-            <h2>Carrinho</h2>
-            {% if carrinho_vazio %}
-                <p>Nenhum item no carrinho.</p>
-            {% else %}
-                {% for item in itens_carrinho %}
-                    {% if item.quantidade > 0 %}
-                        <div class="carrinho-linha">
-                            <span>{{ item.nome }} (x{{ item.quantidade }})</span>
-                            <span>R$ {{ item.subtotal|floatformat:2 }}</span>
-                        </div>
-                    {% endif %}
+        <div class="right-column">
+            <aside class="card">
+                <h2>Carrinho</h2>
+                {% if carrinho_vazio %}
+                    <p>Nenhum item no carrinho.</p>
+                {% else %}
+                    {% for item in itens_carrinho %}
+                        {% if item.quantidade > 0 %}
+                            <div class="carrinho-linha">
+                                <span>{{ item.nome }} (x{{ item.quantidade }})</span>
+                                <span>R$ {{ item.subtotal|floatformat:2 }}</span>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+                <div class="summary-line">
+                    <span>Subtotal</span>
+                    <span>R$ {{ subtotal|floatformat:2 }}</span>
+                </div>
+                <div class="summary-line">
+                    <span>Desconto{% if desconto_percentual %} ({{ desconto_percentual }}%){% endif %}</span>
+                    <span>- R$ {{ desconto|floatformat:2 }}</span>
+                </div>
+                <div class="summary-line">
+                    <span>Entrega</span>
+                    <span>{% if frete == 0 %}Gratis{% else %}R$ {{ frete|floatformat:2 }}{% endif %}</span>
+                </div>
+
+                <div class="total">
+                    <span>Total:</span>
+                    <span>R$ {{ total|floatformat:2 }}</span>
+                </div>
+
+                <form method="post" class="coupon-box">
+                    {% csrf_token %}
+                    <input type="hidden" name="acao" value="aplicar_cupom">
+                    <input type="text" name="cupom_codigo" value="{{ cupom_codigo }}" placeholder="Cupom (FRUTA10 ou FRETEGRATIS)">
+                    <button class="add" type="submit">Aplicar</button>
+                </form>
+
+                <p class="muted">Frete gratis acima de R$ {{ meta_frete_gratis|floatformat:2 }} ou com cupom FRETEGRATIS.</p>
+                {% if frete_gratis_por_cupom %}
+                    <p class="muted">Cupom de frete gratis ativo.</p>
+                {% endif %}
+
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="acao" value="limpar">
+                    <button type="submit" class="danger">Limpar carrinho</button>
+                </form>
+            </aside>
+
+            <aside class="card">
+                <h2>Estoque Atual</h2>
+                {% for fruta in estoque_por_fruta %}
+                    <div class="stock-row">
+                        <span>{{ fruta.nome }}</span>
+                        <strong>{{ fruta.estoque }} un.</strong>
+                    </div>
+                {% empty %}
+                    <p>Nenhum item em estoque.</p>
                 {% endfor %}
-            {% endif %}
-
-            <div class="summary-line">
-                <span>Subtotal</span>
-                <span>R$ {{ subtotal|floatformat:2 }}</span>
-            </div>
-            <div class="summary-line">
-                <span>Desconto{% if desconto_percentual %} ({{ desconto_percentual }}%){% endif %}</span>
-                <span>- R$ {{ desconto|floatformat:2 }}</span>
-            </div>
-            <div class="summary-line">
-                <span>Entrega</span>
-                <span>{% if frete == 0 %}Gratis{% else %}R$ {{ frete|floatformat:2 }}{% endif %}</span>
-            </div>
-
-            <div class="total">
-                <span>Total:</span>
-                <span>R$ {{ total|floatformat:2 }}</span>
-            </div>
-
-            <form method="post" class="coupon-box">
-                {% csrf_token %}
-                <input type="hidden" name="acao" value="aplicar_cupom">
-                <input type="text" name="cupom_codigo" value="{{ cupom_codigo }}" placeholder="Cupom (ex.: FRUTA10)">
-                <button class="add" type="submit">Aplicar</button>
-            </form>
-
-            <p class="muted">Frete gratis para pedidos acima de R$ {{ meta_frete_gratis|floatformat:2 }}</p>
-
-            <form method="post">
-                {% csrf_token %}
-                <input type="hidden" name="acao" value="limpar">
-                <button type="submit" class="danger">Limpar carrinho</button>
-            </form>
-        </aside>
+            </aside>
+        </div>
     </div>
 </body>
 </html>

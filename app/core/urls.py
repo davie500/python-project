@@ -35,5 +35,6 @@ urlpatterns = [
     path("accounts/", include("django.contrib.auth.urls")),
     path("", include("chat.urls")),
     path("fruteira/", include("fruteira.urls")),
+    path("inventory/", include("inventory.urls")),
     path('health/', health_check, name='health_check'),  # Endpoint para health check
 ]
