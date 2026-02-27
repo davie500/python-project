@@ -1,6 +1,18 @@
 """
 settings.py - Configurações centrais do projeto Django.
+"""
+import os
+from pathlib import Path
+import sentry_sdk
 
+sentry_sdk.init(
+    dsn="https://d1e8b048cea5286ccd2d0c473a9b5765@o4510954611802112.ingest.de.sentry.io/4510954664558672",
+    # Add data like request headers and IP for users,
+    # see https://docs.sentry.io/platforms/python/data-management/data-collected/ for more info
+    send_default_pii=True,
+)
+
+"""
 Este arquivo contém todas as configurações do projeto, incluindo:
   - SECRET_KEY: Chave secreta para criptografia (deve ser única em produção)
   - DEBUG: Ativa/desativa o modo de depuração
